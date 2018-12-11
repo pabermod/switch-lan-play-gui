@@ -1,0 +1,15 @@
+switch.lan-play.com:11451
+usplay.secretalgorithm.com:11451
+38.122.225.132:11451
+pcoh.ddns.net:11451
+nxlan.duckdns.org:11451
+relay1.fadx.co.uk:11451
+relay2.fadx.co.uk:11451
+switch.glaciergaming.co.uk:11451
+switch.homelab.tech:11451
+bandits.duckdns.org:11451
+memehouse.de:11451
+relay.it-cybergate.club:11451
+euplay.secretalgorithm.com:11451
+slp.rush-hour.wo.tc:11451
+lithium2g.ddns.net:11451
