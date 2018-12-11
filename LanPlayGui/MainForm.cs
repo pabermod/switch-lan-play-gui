@@ -66,6 +66,7 @@ namespace LanPlayGui
                     toolStripStatusLabel1.Text = executableName + " not found";
                     return;
                 }
+                toolStripStatusLabel1.Text = "Ready";
             }
             else
             {
@@ -86,7 +87,11 @@ namespace LanPlayGui
                         }
                     }
                     toolStripStatusLabel1.Text = "Ready";
-                }               
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Ready";
+                }
             }
 
             button1.Enabled = true;
@@ -156,8 +161,6 @@ namespace LanPlayGui
 
         private async Task<bool> CheckUpdate(Release release)
         {
-            if (release == null)
-                return false;
             var checkSumAsset = release.Assets.FirstOrDefault(a => a.Name == "sha1sum.txt");
 
             if (checkSumAsset == null)

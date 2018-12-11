@@ -244,6 +244,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LanPlayGUI";
             this.Load += new System.EventHandler(this.Form1_LoadAsync);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
