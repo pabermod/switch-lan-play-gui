@@ -8,8 +8,14 @@ using System.Threading.Tasks;
 
 namespace LanPlayGui.Model
 {
-    public class Release
+    public class Release : IRelease
     {
+        public Release(IEnumerable<Asset> assets, Author author)
+        {
+            this.Assets = assets;
+            this.Author = author;
+        }
+
         [JsonProperty("url")]
         public Uri Url { get; set; }
 
@@ -41,7 +47,7 @@ namespace LanPlayGui.Model
         public bool Draft { get; set; }
 
         [JsonProperty("author")]
-        public Author Author { get; set; }
+        public IAuthor Author { get; set; }
 
         [JsonProperty("prerelease")]
         public bool Prerelease { get; set; }
@@ -53,7 +59,7 @@ namespace LanPlayGui.Model
         public DateTimeOffset PublishedAt { get; set; }
 
         [JsonProperty("assets")]
-        public List<Asset> Assets { get; set; }
+        public IEnumerable<IAsset> Assets { get; set; }
 
         [JsonProperty("tarball_url")]
         public Uri TarballUrl { get; set; }

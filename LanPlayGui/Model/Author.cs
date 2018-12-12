@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LanPlayGui.Model
 {
-    public class Author
+    public class Author : IAuthor
     {
         [JsonProperty("login")]
         public string Login { get; set; }

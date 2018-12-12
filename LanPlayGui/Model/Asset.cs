@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace LanPlayGui.Model
 {
-    public class Asset
+    public class Asset : IAsset
     {
+        public Asset(Author uploader)
+        {
+            this.Uploader = uploader;
+        }
+
         [JsonProperty("url")]
         public Uri Url { get; set; }
 
@@ -25,7 +30,7 @@ namespace LanPlayGui.Model
         public string Label { get; set; }
 
         [JsonProperty("uploader")]
-        public Author Uploader { get; set; }
+        public IAuthor Uploader { get; set; }
 
         [JsonProperty("content_type")]
         public string ContentType { get; set; }
