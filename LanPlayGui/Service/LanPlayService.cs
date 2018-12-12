@@ -1,5 +1,6 @@
 ﻿using LanPlayGui.Extensions;
 using LanPlayGui.Model;
+using LanPlayGui.Model.GitHub;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,11 @@ namespace LanPlayGui.Service
         public string GetExecutableName()
         {
             return executableName;
+        }
+
+        public bool IsLanPlayPresent()
+        {
+            return File.Exists(GetExecutableName());
         }
 
         public async Task<IRelease> GetLatestReleaseAsync()

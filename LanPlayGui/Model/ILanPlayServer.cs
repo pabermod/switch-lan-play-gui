@@ -7,7 +7,5 @@ namespace LanPlayGui.Model
     {
         ILanPlayServerStatus Status { get; set; }
         Uri Uri { get; set; }
-
-        Task UpdateStatus();
     }
 }

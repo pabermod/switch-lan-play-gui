@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LanPlayGui.Model
+namespace LanPlayGui.Model.GitHub
 {
     public interface IRelease
     {

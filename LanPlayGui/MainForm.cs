@@ -1,7 +1,6 @@
-﻿using LanPlayGui.Extensions;
-using LanPlayGui.Model;
+﻿using LanPlayGui.Model;
+using LanPlayGui.Model.GitHub;
 using LanPlayGui.Service;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,18 +17,16 @@ namespace LanPlayGui
 {
     public partial class MainForm : Form
     {
-        private const string serverListFileName = "serverlist.txt";
-
-        private IEnumerable<Uri> serverList;
         private ILanPlayServer currentServer;
         private LanPlayService lanPlayService;
+        private LanPlayServerService serverService;
 
         public MainForm()
         {
             InitializeComponent();
 
-            serverList = new List<Uri>(); ;
             lanPlayService = new LanPlayService();
+            serverService = new LanPlayServerService();
         }
 
         private async void Form1_LoadAsync(object sender, EventArgs e)
@@ -37,26 +34,13 @@ namespace LanPlayGui
             button1.Enabled = false;
             toolStripStatusLabel1.Text = "Checking for LanPlay updates...";
 
-            IList<Uri> servers = new List<Uri>();
-            using (TextReader reader = File.OpenText(serverListFileName))
-            {
-                string line;
-                while((line = await reader.ReadLineAsync()) != null)
-                {
-                    if (!line.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
-                        line = "http://" + line;
-                    servers.Add(new Uri(line));
-                }
-                    
-            }
-            serverList = servers.OrderBy(u => u.Host);
-            bindingSource1.DataSource = serverList;
+            await serverService.InitializeAsync();
 
+            bindingSource1.DataSource = serverService.Servers.OrderBy(u => u.Uri.Host);
             listBox1.DataSource = bindingSource1;
-            listBox1.DisplayMember = "Host";
 
             IRelease release = await lanPlayService.GetLatestReleaseAsync();
-            if (!File.Exists(lanPlayService.GetExecutableName()))
+            if (!lanPlayService.IsLanPlayPresent())
             {
                 toolStripStatusLabel1.Text = "Downloading LanPlay...";
                 if(!await lanPlayService.DownloadLanPlayExecutable(release))
@@ -97,7 +81,7 @@ namespace LanPlayGui
 
         private void ListBox1_SelectedValueChanged(object sender, EventArgs e)
         {
-            currentServer = new LanPlayServer((Uri)listBox1.SelectedItem);
+            currentServer = (ILanPlayServer)listBox1.SelectedItem;
         }
 
         private void Button1_Click(object sender, EventArgs e)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LanPlayGui.Model
+namespace LanPlayGui.Model.GitHub
 {
     public interface IAsset
     {

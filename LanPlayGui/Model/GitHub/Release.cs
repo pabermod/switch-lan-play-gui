@@ -1,12 +1,8 @@
-﻿using LanPlayGui.Model;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LanPlayGui.Model
+namespace LanPlayGui.Model.GitHub
 {
     public class Release : IRelease
     {

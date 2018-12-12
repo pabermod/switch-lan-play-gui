@@ -9,8 +9,6 @@ namespace LanPlayGui.Model
 {
     public class LanPlayServer : ILanPlayServer
     {
-        private static HttpClient httpClient = new HttpClient();
-
         public LanPlayServer(Uri uri)
         {
             Uri = uri;
@@ -20,9 +18,9 @@ namespace LanPlayGui.Model
 
         public ILanPlayServerStatus Status { get; set; }
 
-        public Task UpdateStatus()
+        public override string ToString()
         {
-            return Task.CompletedTask;
+            return Uri.Host;
         }
     }
 }

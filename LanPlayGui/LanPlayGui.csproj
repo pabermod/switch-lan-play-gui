@@ -56,18 +56,19 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model\Asset.cs" />
-    <Compile Include="Model\Author.cs" />
-    <Compile Include="Model\IAsset.cs" />
-    <Compile Include="Model\IAuthor.cs" />
+    <Compile Include="Model\GitHub\Asset.cs" />
+    <Compile Include="Model\GitHub\Author.cs" />
+    <Compile Include="Model\GitHub\IAsset.cs" />
+    <Compile Include="Model\GitHub\IAuthor.cs" />
     <Compile Include="Model\ILanPlayServer.cs" />
     <Compile Include="Model\ILanPlayServerStatus.cs" />
-    <Compile Include="Model\IRelease.cs" />
+    <Compile Include="Model\GitHub\IRelease.cs" />
     <Compile Include="Model\LanPlayServer.cs" />
     <Compile Include="Model\LanPlayServerStatus.cs" />
-    <Compile Include="Model\Release.cs" />
+    <Compile Include="Model\GitHub\Release.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\LanPlayServerService.cs" />
     <Compile Include="Service\LanPlayService.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
