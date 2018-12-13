@@ -41,10 +41,10 @@ namespace LanPlayGui
 
             bindingSource1.DataSource = new SortableBindingList<ILanPlayServer>(serverService.Servers.ToList());
 
-
             dataGridView1.AutoGenerateColumns = true;
             dataGridView1.DataSource = bindingSource1;
             dataGridView1.Columns["Uri"].Visible = false;
+            dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
 
             serverService.UpdateServersStatus();
 
