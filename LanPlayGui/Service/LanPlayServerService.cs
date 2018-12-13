@@ -52,14 +52,14 @@ namespace LanPlayGui.Service
 
         public LanPlayServerService()
         {
-            Servers = new List<LanPlayServer>();
+            Servers = new List<ILanPlayServer>();
 
             httpClient.Timeout = new TimeSpan(0, 0, 5);
         }
 
         public async Task InitializeAsync()
         {
-            IList<LanPlayServer> serverList = new List<LanPlayServer>();
+            IList<ILanPlayServer> serverList = new List<ILanPlayServer>();
             using (TextReader reader = File.OpenText(serverListFileName))
             {
                 string line;
@@ -73,7 +73,7 @@ namespace LanPlayGui.Service
             Servers = serverList;
         }
 
-        public async Task UpdateServersStatus()
+        public async void UpdateServersStatus()
         {
             IList<Task> tasks = new List<Task>();
             foreach (var server in Servers)

@@ -35,25 +35,18 @@ namespace LanPlayGui
 
         private async void Form1_LoadAsync(object sender, EventArgs e)
         {
-            button1.Enabled = false;
             toolStripStatusLabel1.Text = "Checking for LanPlay updates...";
 
             await serverService.InitializeAsync();
 
             bindingSource1.DataSource = new SortableBindingList<ILanPlayServer>(serverService.Servers.ToList());
 
-            dataGridView1.DataSource = bindingSource1;
-            dataGridView1.MultiSelect = false;
-            dataGridView1.RowHeadersVisible = false;
-            dataGridView1.AllowUserToResizeRows = false;
-            dataGridView1.BorderStyle = BorderStyle.None;
-            dataGridView1.AllowUserToResizeColumns = false;
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView1.Columns["Uri"].Visible = false;
-            dataGridView1.ReadOnly = true;
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
-            Task serverStatusTask = Task.Run(() => serverService.UpdateServersStatus());
+            dataGridView1.AutoGenerateColumns = true;
+            dataGridView1.DataSource = bindingSource1;
+            dataGridView1.Columns["Uri"].Visible = false;
+
+            serverService.UpdateServersStatus();
 
             IRelease release = await lanPlayService.GetLatestReleaseAsync();
             if (!lanPlayService.IsLanPlayPresent())
@@ -91,8 +84,6 @@ namespace LanPlayGui
                     toolStripStatusLabel1.Text = "Ready";
                 }
             }
-
-            button1.Enabled = true;
         }
 
         private void DataGrid_SelectedValueChanged(object sender, EventArgs e)
@@ -110,15 +101,15 @@ namespace LanPlayGui
 
         private void DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            foreach (DataGridViewRow Myrow in dataGridView1.Rows)
-            {            
-                if ((ServerStatus)Myrow.Cells["Status"].Value  == ServerStatus.Offline)// Or your condition 
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "Status")
+            {
+                if ((ServerStatus)e.Value == ServerStatus.Offline)
                 {
-                    Myrow.DefaultCellStyle.BackColor = Color.Red;
+                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.Red;
                 }
                 else
                 {
-                    Myrow.DefaultCellStyle.BackColor = Color.Green;
+                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.Green;
                 }
             }
         }

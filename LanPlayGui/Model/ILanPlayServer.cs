@@ -1,9 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace LanPlayGui.Model
 {
-    public interface ILanPlayServer
+    public interface ILanPlayServer : INotifyPropertyChanged
     {
         string Name { get; set; }
         Uri Uri { get; set; }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,6 +16,8 @@ namespace LanPlayGui.Model
             Uri = uri;
         }
 
+        private string name;
+
         public string Name
         {
             get
@@ -22,19 +26,81 @@ namespace LanPlayGui.Model
             }
             set
             {
-                name = value;
+                if (value != name)
+                {
+                    name = value;
+                    NotifyPropertyChanged();
+                }
             }
         }
 
-        private string name;
+        private Uri uri;
 
-        public Uri Uri { get; set; }
+        public Uri Uri
+        {
+            get { return uri; }
+            set
+            {
+                if (value != uri)
+                {
+                    uri = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
-        public ServerStatus Status { get; set; }
+        private ServerStatus status;
 
-        public string Version { get; set; }
+        public ServerStatus Status
+        {
+            get { return status; }
+            set
+            {
+                if (value != status)
+                {
+                    status = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
-        public long OnlinePeople { get; set; }
+        private string version;
+
+        public string Version
+        {
+            get { return version; }
+            set
+            {
+                if (value != version)
+                {
+                    version = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        private long onlinePeople;
+
+        [DisplayName("Online")]
+        public long OnlinePeople
+        {
+            get { return onlinePeople; }
+            set
+            {
+                if (value != onlinePeople)
+                {
+                    onlinePeople = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public override string ToString()
         {
