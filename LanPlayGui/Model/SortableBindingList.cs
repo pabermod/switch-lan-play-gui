@@ -87,8 +87,7 @@ namespace LanPlayGui.Model
             _sortProperty = prop;
             _sortDirection = direction;
 
-            List<T> list = Items as List<T>;
-            if (list == null) return;
+            if (!(Items is List<T> list)) return;
 
             list.Sort(Compare);
 

@@ -53,6 +53,8 @@ namespace LanPlayGui
             dataGridView1.ReadOnly = true;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
+            Task serverStatusTask = Task.Run(() => serverService.UpdateServersStatus());
+
             IRelease release = await lanPlayService.GetLatestReleaseAsync();
             if (!lanPlayService.IsLanPlayPresent())
             {
@@ -91,10 +93,6 @@ namespace LanPlayGui
             }
 
             button1.Enabled = true;
-            toolStripStatusLabel1.Text = "Updating server list status...";
-
-            await Task.Run(() => serverService.UpdateServersStatus());
-            toolStripStatusLabel1.Text = "Ready";
         }
 
         private void DataGrid_SelectedValueChanged(object sender, EventArgs e)
