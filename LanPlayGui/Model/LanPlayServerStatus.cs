@@ -7,12 +7,17 @@ using System.Threading.Tasks;
 
 namespace LanPlayGui.Model
 {
-    public class LanPlayServerStatus : ILanPlayServerStatus
+    public class LanPlayServerStatus
     {
         [JsonProperty("online")]
         public long OnlinePeople { get; set; }
 
         [JsonProperty("version")]
         public string Version { get; set; }
+
+        public override string ToString()
+        {
+            return $"{OnlinePeople} - {Version}";
+        }
     }
 }

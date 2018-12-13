@@ -56,16 +56,17 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\ServerStatus.cs" />
     <Compile Include="Model\GitHub\Asset.cs" />
     <Compile Include="Model\GitHub\Author.cs" />
     <Compile Include="Model\GitHub\IAsset.cs" />
     <Compile Include="Model\GitHub\IAuthor.cs" />
     <Compile Include="Model\ILanPlayServer.cs" />
-    <Compile Include="Model\ILanPlayServerStatus.cs" />
     <Compile Include="Model\GitHub\IRelease.cs" />
     <Compile Include="Model\LanPlayServer.cs" />
     <Compile Include="Model\LanPlayServerStatus.cs" />
     <Compile Include="Model\GitHub\Release.cs" />
+    <Compile Include="Model\SortableBindingList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\LanPlayServerService.cs" />

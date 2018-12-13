@@ -3,8 +3,10 @@ using LanPlayGui.Model.GitHub;
 using LanPlayGui.Service;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -20,6 +22,8 @@ namespace LanPlayGui
         private ILanPlayServer currentServer;
         private LanPlayService lanPlayService;
         private LanPlayServerService serverService;
+        private bool isSortAscending;
+        private DataGridViewColumn sortColumn;
 
         public MainForm()
         {
@@ -36,8 +40,18 @@ namespace LanPlayGui
 
             await serverService.InitializeAsync();
 
-            bindingSource1.DataSource = serverService.Servers.OrderBy(u => u.Uri.Host);
-            listBox1.DataSource = bindingSource1;
+            bindingSource1.DataSource = new SortableBindingList<ILanPlayServer>(serverService.Servers.ToList());
+
+            dataGridView1.DataSource = bindingSource1;
+            dataGridView1.MultiSelect = false;
+            dataGridView1.RowHeadersVisible = false;
+            dataGridView1.AllowUserToResizeRows = false;
+            dataGridView1.BorderStyle = BorderStyle.None;
+            dataGridView1.AllowUserToResizeColumns = false;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.Columns["Uri"].Visible = false;
+            dataGridView1.ReadOnly = true;
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
             IRelease release = await lanPlayService.GetLatestReleaseAsync();
             if (!lanPlayService.IsLanPlayPresent())
@@ -77,11 +91,15 @@ namespace LanPlayGui
             }
 
             button1.Enabled = true;
+            toolStripStatusLabel1.Text = "Updating server list status...";
+
+            await Task.Run(() => serverService.UpdateServersStatus());
+            toolStripStatusLabel1.Text = "Ready";
         }
 
-        private void ListBox1_SelectedValueChanged(object sender, EventArgs e)
-        {
-            currentServer = (ILanPlayServer)listBox1.SelectedItem;
+        private void DataGrid_SelectedValueChanged(object sender, EventArgs e)
+        { 
+            currentServer = (ILanPlayServer)dataGridView1.CurrentRow?.DataBoundItem;
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -92,5 +110,33 @@ namespace LanPlayGui
             lanPlayService.Start(currentServer);
         }
 
+        private void DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            foreach (DataGridViewRow Myrow in dataGridView1.Rows)
+            {            
+                if ((ServerStatus)Myrow.Cells["Status"].Value  == ServerStatus.Offline)// Or your condition 
+                {
+                    Myrow.DefaultCellStyle.BackColor = Color.Red;
+                }
+                else
+                {
+                    Myrow.DefaultCellStyle.BackColor = Color.Green;
+                }
+            }
+        }
+
+        private void DataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            DataGridViewColumn column = dataGridView1.Columns[e.ColumnIndex];
+
+            isSortAscending = (sortColumn == null || isSortAscending == false);
+
+            ListSortDirection direction = isSortAscending ? ListSortDirection.Ascending : ListSortDirection.Descending;
+            dataGridView1.Sort(column, direction);
+
+            if (sortColumn != null) sortColumn.HeaderCell.SortGlyphDirection = SortOrder.None;
+            column.HeaderCell.SortGlyphDirection = isSortAscending ? SortOrder.Ascending : SortOrder.Descending;
+            sortColumn = column;
+        }
     }
 }

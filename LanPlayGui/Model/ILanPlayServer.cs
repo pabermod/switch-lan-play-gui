@@ -5,7 +5,10 @@ namespace LanPlayGui.Model
 {
     public interface ILanPlayServer
     {
-        ILanPlayServerStatus Status { get; set; }
+        string Name { get; set; }
         Uri Uri { get; set; }
+        ServerStatus Status { get; set; }
+        string Version { get; set; }
+        long OnlinePeople { get; set; }
     }
 }

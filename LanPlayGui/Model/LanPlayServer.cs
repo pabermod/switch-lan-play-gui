@@ -14,9 +14,27 @@ namespace LanPlayGui.Model
             Uri = uri;
         }
 
+        public string Name
+        {
+            get
+            {
+                return string.IsNullOrEmpty(name) ? Uri.Host : name;
+            }
+            set
+            {
+                name = value;
+            }
+        }
+
+        private string name;
+
         public Uri Uri { get; set; }
 
-        public ILanPlayServerStatus Status { get; set; }
+        public ServerStatus Status { get; set; }
+
+        public string Version { get; set; }
+
+        public long OnlinePeople { get; set; }
 
         public override string ToString()
         {
