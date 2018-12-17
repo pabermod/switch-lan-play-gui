@@ -86,9 +86,10 @@ namespace LanPlayGui
             }
         }
 
-        private void DataGrid_SelectedValueChanged(object sender, EventArgs e)
+        private void DataGrid_SelectedValueChangedAsync(object sender, EventArgs e)
         { 
             currentServer = (ILanPlayServer)dataGridView1.CurrentRow?.DataBoundItem;
+            var task = Task.Run(() => serverService.UpdateServerStatus(currentServer));
         }
 
         private void Button1_Click(object sender, EventArgs e)

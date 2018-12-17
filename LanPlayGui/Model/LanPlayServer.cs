@@ -81,8 +81,7 @@ namespace LanPlayGui.Model
 
         private long onlinePeople;
 
-        [DisplayName("Online")]
-        public long OnlinePeople
+        public long Online
         {
             get { return onlinePeople; }
             set
@@ -94,6 +93,22 @@ namespace LanPlayGui.Model
                 }
             }
         }
+
+        private long ping;
+
+        public long Ping
+        {
+            get { return ping; }
+            set
+            {
+                if (value != ping)
+                {
+                    ping = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

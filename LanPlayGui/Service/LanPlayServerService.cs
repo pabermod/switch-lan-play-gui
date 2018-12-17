@@ -22,16 +22,15 @@ namespace LanPlayGui.Service
             return new Uri(server.Uri, "info");
         }
 
-        private static bool PingHost(string nameOrAddress)
+        private static long PingHost(string nameOrAddress)
         {
-            bool pingable = false;
             Ping pinger = null;
 
             try
             {
                 pinger = new Ping();
                 PingReply reply = pinger.Send(nameOrAddress);
-                pingable = reply.Status == IPStatus.Success;
+                return reply.RoundtripTime;
             }
             catch (PingException)
             {
@@ -45,7 +44,7 @@ namespace LanPlayGui.Service
                 }
             }
 
-            return pingable;
+            return 0;
         }
 
         public IEnumerable<ILanPlayServer> Servers { get; set; }
@@ -80,42 +79,60 @@ namespace LanPlayGui.Service
             {
                 tasks.Add(Task.Run(async () =>
                 {
-                    Console.WriteLine($"Sending Ping to {server.Name}");
-                    if (!PingHost(server.Uri.Host))
-                    {
-                        server.Status = ServerStatus.Offline;
-                    }
-                    try
-                    {
-                        Console.WriteLine($"Sending request to {server.Name}");
-                        using (HttpResponseMessage response = await httpClient.GetAsync(GetInfoUri(server)))
-                        {
-                            if (response.IsSuccessStatusCode)
-                            {
-                                string resultString = await response.Content.ReadAsStringAsync();
-                                var status = JsonConvert.DeserializeObject<LanPlayServerStatus>(resultString);
-
-                                server.Status = ServerStatus.Online;
-                                server.Version = status.Version;
-                                server.OnlinePeople = status.OnlinePeople;
-                            }
-                        }
-                    }
-                    catch (HttpRequestException)
-                    {
-                        Console.WriteLine($"Request exception to {server.Name}");
-                        server.Status = ServerStatus.Offline;
-                        return;
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        Console.WriteLine($"Timed out request to {server.Name}");
-                        server.Status = ServerStatus.Offline;
-                        return;
-                    }
+                    await UpdateServerStatus(server);
                 }));
             }
             await Task.WhenAll(tasks);
+        }
+
+        public async Task UpdateServerStatus(ILanPlayServer server)
+        {
+            Console.WriteLine($"Updating server {server.Name}");
+            long ping = PingHost(server.Uri.Host);
+            if (ping == 0)
+            {
+                SetServerToOffline(server);
+                return;
+            }
+            try
+            {
+                Console.WriteLine($"Sending request to {server.Name}");
+                using (HttpResponseMessage response = await httpClient.GetAsync(GetInfoUri(server)))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultString = await response.Content.ReadAsStringAsync();
+                        var status = JsonConvert.DeserializeObject<LanPlayServerStatus>(resultString);
+
+                        server.Status = ServerStatus.Online;
+                        server.Version = status.Version;
+                        server.Online = status.Online;
+                        server.Ping = ping;
+
+                        Console.WriteLine($"Server {server.Name} updated");
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Request exception to {server.Name}: {ex.Message}");
+                SetServerToOffline(server);
+                return;
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine($"Timed out request to {server.Name}");
+                SetServerToOffline(server);
+                return;
+            }
+        }
+
+        private static void SetServerToOffline(ILanPlayServer server)
+        {
+            server.Status = ServerStatus.Offline;
+            server.Ping = 0;
+            server.Version = "Unknown";
+            server.Online = 0;
         }
     }
 }

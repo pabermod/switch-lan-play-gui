@@ -102,7 +102,7 @@
             this.dataGridView1.TabIndex = 4;
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.DataGridView1_CellFormatting);
             this.dataGridView1.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DataGridView1_ColumnHeaderMouseClick);
-            this.dataGridView1.SelectionChanged += new System.EventHandler(this.DataGrid_SelectedValueChanged);
+            this.dataGridView1.SelectionChanged += new System.EventHandler(this.DataGrid_SelectedValueChangedAsync);
             // 
             // label2
             // 

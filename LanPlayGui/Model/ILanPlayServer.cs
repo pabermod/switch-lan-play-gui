@@ -10,6 +10,7 @@ namespace LanPlayGui.Model
         Uri Uri { get; set; }
         ServerStatus Status { get; set; }
         string Version { get; set; }
-        long OnlinePeople { get; set; }
+        long Online { get; set; }
+        long Ping { get; set; }
     }
 }

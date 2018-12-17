@@ -10,14 +10,14 @@ namespace LanPlayGui.Model
     public class LanPlayServerStatus
     {
         [JsonProperty("online")]
-        public long OnlinePeople { get; set; }
+        public long Online { get; set; }
 
         [JsonProperty("version")]
         public string Version { get; set; }
 
         public override string ToString()
         {
-            return $"{OnlinePeople} - {Version}";
+            return $"{Online} - {Version}";
         }
     }
 }
