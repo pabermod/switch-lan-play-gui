@@ -1,17 +1,12 @@
 ﻿using LanPlayGui.Model;
 using LanPlayGui.Model.GitHub;
 using LanPlayGui.Service;
+using PcapDotNet.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -35,6 +30,27 @@ namespace LanPlayGui
 
         private async void Form1_LoadAsync(object sender, EventArgs e)
         {
+            // Retrieve the device list from the local machine
+            IList<LivePacketDevice> allDevices = LivePacketDevice.AllLocalMachine;
+
+            if (allDevices.Count == 0)
+            {
+                Console.WriteLine("No interfaces found! Make sure WinPcap is installed.");
+            }
+            else
+            {
+                // Print the list
+                for (int i = 0; i != allDevices.Count; ++i)
+                {
+                    LivePacketDevice device = allDevices[i];
+                    Console.Write((i + 1) + ". " + device.Name);
+                    if (device.Description != null)
+                        Console.WriteLine(" (" + device.Description + ")");
+                    else
+                        Console.WriteLine(" (No description available)");
+                }
+            }
+
             toolStripStatusLabel1.Text = "Checking for LanPlay updates...";
 
             await serverService.InitializeAsync();
@@ -44,7 +60,7 @@ namespace LanPlayGui
             dataGridView1.AutoGenerateColumns = true;
             dataGridView1.DataSource = bindingSource1;
             dataGridView1.Columns["Uri"].Visible = false;
-            dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+            dataGridView1.BackgroundColor = SystemColors.Control;
 
             serverService.UpdateServersStatus();
 
