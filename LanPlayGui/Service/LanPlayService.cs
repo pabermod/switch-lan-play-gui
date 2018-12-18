@@ -23,14 +23,14 @@ namespace LanPlayGui.Service
         private HttpClient httpClient = new HttpClient();
         private Process lanPlayProcess;
 
-        public void Start(ILanPlayServer server)
+        public void Start(ILanPlayServer server, string interfaceName)
         {
-            lanPlayProcess = Process.Start(executableName, "--relay-server-addr " + server.Uri.AbsoluteUri);
+            lanPlayProcess = Process.Start(executableName, $"--relay-server-addr {server.Uri.AbsoluteUri} --netif {interfaceName}");
         }
 
         public void Stop()
         {
-            if(lanPlayProcess != null)
+            if(lanPlayProcess != null && !lanPlayProcess.HasExited)
             {
                 lanPlayProcess.Kill();
             }
@@ -135,7 +135,7 @@ namespace LanPlayGui.Service
         private string ComputeLanPlayCheckSum(string filePath)
         {
             StringBuilder formatted = null;
-            using (FileStream fs = new FileStream(filePath, FileMode.Open))
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (BufferedStream bs = new BufferedStream(fs))
             {
                 using (SHA1Managed sha1 = new SHA1Managed())

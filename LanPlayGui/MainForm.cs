@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace LanPlayGui
 {
@@ -35,40 +36,32 @@ namespace LanPlayGui
 
             if (allDevices.Count == 0)
             {
-                Console.WriteLine("No interfaces found! Make sure WinPcap is installed.");
+                MessageBox.Show("No interfaces found! Make sure WinPcap is installed.", "WinPcap not found", MessageBoxButtons.OK);
+                button1.Enabled = false;
+                return;
             }
             else
             {
-                // Print the list
-                for (int i = 0; i != allDevices.Count; ++i)
-                {
-                    LivePacketDevice device = allDevices[i];
-                    Console.Write((i + 1) + ". " + device.Name);
-                    if (device.Description != null)
-                        Console.WriteLine(" (" + device.Description + ")");
-                    else
-                        Console.WriteLine(" (No description available)");
-                }
+                InitializeComboBox(allDevices);
             }
 
             toolStripStatusLabel1.Text = "Checking for LanPlay updates...";
 
             await serverService.InitializeAsync();
 
-            bindingSource1.DataSource = new SortableBindingList<ILanPlayServer>(serverService.Servers.ToList());
-
-            dataGridView1.AutoGenerateColumns = true;
-            dataGridView1.DataSource = bindingSource1;
-            dataGridView1.Columns["Uri"].Visible = false;
-            dataGridView1.BackgroundColor = SystemColors.Control;
+            InitializeDataGrid();
 
             serverService.UpdateServersStatus();
+            DownloadOrUpdateLanPlay();
+        }
 
+        private async void DownloadOrUpdateLanPlay()
+        {
             IRelease release = await lanPlayService.GetLatestReleaseAsync();
             if (!lanPlayService.IsLanPlayPresent())
             {
                 toolStripStatusLabel1.Text = "Downloading LanPlay...";
-                if(!await lanPlayService.DownloadLanPlayExecutable(release))
+                if (!await lanPlayService.DownloadLanPlayExecutable(release))
                 {
                     toolStripStatusLabel1.Text = lanPlayService.GetExecutableName() + " not found";
                     return;
@@ -102,6 +95,38 @@ namespace LanPlayGui
             }
         }
 
+        private void InitializeComboBox(IList<LivePacketDevice> allDevices)
+        {
+            interfaceSource.DataSource = new BindingList<LivePacketDevice>(allDevices);
+            comboBox1.DisplayMember = "Description";
+            comboBox1.DataSource = interfaceSource;
+            comboBox1.DropDownWidth = DropDownWidth(comboBox1);
+        }
+
+        private void InitializeDataGrid()
+        {
+            serverSource.DataSource = new SortableBindingList<ILanPlayServer>(serverService.Servers.ToList());
+
+            dataGridView1.AutoGenerateColumns = true;
+            dataGridView1.DataSource = serverSource;
+            dataGridView1.Columns["Uri"].Visible = false;
+            dataGridView1.BackgroundColor = SystemColors.Control;
+        }
+
+        private int DropDownWidth(ComboBox myCombo)
+        {
+            int maxWidth = 0, temp = 0;
+            foreach (var obj in myCombo.Items)
+            {
+                temp = TextRenderer.MeasureText((obj as LivePacketDevice).Description, myCombo.Font).Width;
+                if (temp > maxWidth)
+                {
+                    maxWidth = temp;
+                }
+            }
+            return maxWidth;
+        }
+
         private void DataGrid_SelectedValueChangedAsync(object sender, EventArgs e)
         { 
             currentServer = (ILanPlayServer)dataGridView1.CurrentRow?.DataBoundItem;
@@ -113,7 +138,9 @@ namespace LanPlayGui
             if (currentServer == null)
                 return;
 
-            lanPlayService.Start(currentServer);
+            string value = (comboBox1.SelectedValue as LivePacketDevice).Name;
+            value = value.Substring(value.IndexOf('\\'));
+            lanPlayService.Start(currentServer, value);
         }
 
         private void DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -143,6 +170,11 @@ namespace LanPlayGui
             if (sortColumn != null) sortColumn.HeaderCell.SortGlyphDirection = SortOrder.None;
             column.HeaderCell.SortGlyphDirection = isSortAscending ? SortOrder.Ascending : SortOrder.Descending;
             sortColumn = column;
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            lanPlayService.Stop();
         }
     }
 }
