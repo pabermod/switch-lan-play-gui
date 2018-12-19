@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using LanPlayGui.Extensions;
 
 namespace LanPlayGui
 {
@@ -32,7 +33,18 @@ namespace LanPlayGui
         private async void Form1_LoadAsync(object sender, EventArgs e)
         {
             // Retrieve the device list from the local machine
-            IList<LivePacketDevice> allDevices = LivePacketDevice.AllLocalMachine;
+            IList<LivePacketDevice> allDevices = new List<LivePacketDevice>();
+            try
+            {
+                allDevices  = LivePacketDevice.AllLocalMachine;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "WinPcap not found", MessageBoxButtons.OK);
+                button1.Enabled = false;
+                Close();
+            }
+
 
             if (allDevices.Count == 0)
             {
@@ -97,7 +109,8 @@ namespace LanPlayGui
 
         private void InitializeComboBox(IList<LivePacketDevice> allDevices)
         {
-            interfaceSource.DataSource = new BindingList<LivePacketDevice>(allDevices);
+            interfaceSource.DataSource = new BindingList<LivePacketDevice>(allDevices
+                .Where(i => i.Addresses.Any(a => a.Netmask.Family != SocketAddressFamily.Unspecified)).ToList());
             comboBox1.DisplayMember = "Description";
             comboBox1.DataSource = interfaceSource;
             comboBox1.DropDownWidth = DropDownWidth(comboBox1);
@@ -141,6 +154,13 @@ namespace LanPlayGui
             string value = (comboBox1.SelectedValue as LivePacketDevice).Name;
             value = value.Substring(value.IndexOf('\\'));
             lanPlayService.Start(currentServer, value);
+            lanPlayService.Exited += LanPlayService_Exited;
+            button1.Enabled = false;
+        }
+
+        private void LanPlayService_Exited(object sender, EventArgs e)
+        {
+            button1.InvokeIfRequired(b => b.Enabled = true);
         }
 
         private void DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

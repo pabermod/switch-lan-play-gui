@@ -23,9 +23,18 @@ namespace LanPlayGui.Service
         private HttpClient httpClient = new HttpClient();
         private Process lanPlayProcess;
 
+        public event EventHandler Exited;
+
         public void Start(ILanPlayServer server, string interfaceName)
         {
             lanPlayProcess = Process.Start(executableName, $"--relay-server-addr {server.Uri.AbsoluteUri} --netif {interfaceName}");
+            lanPlayProcess.EnableRaisingEvents = true;
+            lanPlayProcess.Exited += LanPlayProcess_Exited;
+        }
+
+        private void LanPlayProcess_Exited(object sender, EventArgs e)
+        {
+            Exited?.Invoke(this, e);
         }
 
         public void Stop()
