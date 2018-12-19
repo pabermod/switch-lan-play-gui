@@ -80,16 +80,17 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PcapDotNet.Base, Version=1.0.4.25027, Culture=neutral, PublicKeyToken=06a20bc2fabb1931, processorArchitecture=MSIL">
+    <Reference Include="PcapDotNet.Base">
       <HintPath>$(PcapPath)\PcapDotNet.Base.dll</HintPath>
     </Reference>
-    <Reference Condition="'$(Platform)' == 'x64'" Include="PcapDotNet.Core, Version=1.0.4.25149, Culture=neutral, PublicKeyToken=06a20bc2fabb1931, processorArchitecture=AMD64">
+    <Reference Include="PcapDotNet.Core">
       <HintPath>$(PcapPath)\PcapDotNet.Core.dll</HintPath>
     </Reference>
-    <Reference Condition="'$(Platform)' == 'x64'" Include="PcapDotNet.Core.Extensions, Version=1.0.4.25151, Culture=neutral, PublicKeyToken=06a20bc2fabb1931, processorArchitecture=AMD64">
+    <Reference Include="PcapDotNet.Core.Extensions">
       <HintPath>$(PcapPath)\PcapDotNet.Core.Extensions.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Condition="'$(Platform)' == 'x64'" Include="PcapDotNet.Packets, Version=1.0.4.25028, Culture=neutral, PublicKeyToken=06a20bc2fabb1931, processorArchitecture=MSIL">
+    <Reference Include="PcapDotNet.Packets">
       <HintPath>$(PcapPath)\PcapDotNet.Packets.dll</HintPath>
     </Reference>
     <Reference Include="System" />
