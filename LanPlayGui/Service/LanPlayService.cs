@@ -27,7 +27,7 @@ namespace LanPlayGui.Service
 
         public void Start(ILanPlayServer server, string interfaceName)
         {
-            lanPlayProcess = Process.Start(executableName, $"--relay-server-addr {server.Uri.AbsoluteUri} --netif {interfaceName}");
+            lanPlayProcess = Process.Start(executableName, $"--relay-server-addr {server.Uri.Host}:{server.Uri.Port} --netif {interfaceName}");
             lanPlayProcess.EnableRaisingEvents = true;
             lanPlayProcess.Exited += LanPlayProcess_Exited;
         }
