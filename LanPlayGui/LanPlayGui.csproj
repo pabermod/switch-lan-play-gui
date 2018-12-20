@@ -124,6 +124,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\InvokingBindingList.cs" />
     <Compile Include="Model\ServerStatus.cs" />
     <Compile Include="Model\GitHub\Asset.cs" />
     <Compile Include="Model\GitHub\Author.cs" />

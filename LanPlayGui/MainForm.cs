@@ -119,7 +119,7 @@ namespace LanPlayGui
 
         private void InitializeDataGrid()
         {
-            serverSource.DataSource = new SortableBindingList<ILanPlayServer>(serverService.Servers.ToList());
+            serverSource.DataSource = new SortableBindingList<ILanPlayServer>(serverService.Servers.ToList(), dataGridView1);
 
             dataGridView1.AutoGenerateColumns = true;
             dataGridView1.DataSource = serverSource;

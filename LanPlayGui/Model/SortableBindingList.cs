@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace LanPlayGui.Model
 {
@@ -13,25 +14,19 @@ namespace LanPlayGui.Model
     /// If the elements are IComparable it uses that; otherwise compares the ToString()
     /// </summary>
     /// <typeparam name="T">The type of elements in the list.</typeparam>
-    public class SortableBindingList<T> : BindingList<T> where T : class
+    public class SortableBindingList<T> : InvokingBindingList<T> where T : class
     {
         private bool _isSorted;
         private ListSortDirection _sortDirection = ListSortDirection.Ascending;
         private PropertyDescriptor _sortProperty;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SortableBindingList{T}"/> class.
-        /// </summary>
-        public SortableBindingList()
+        public SortableBindingList(IList<T> list, Control control = null) 
+            : base(list, control)
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SortableBindingList{T}"/> class.
-        /// </summary>
-        /// <param name="list">An <see cref="T:System.Collections.Generic.IList`1" /> of items to be contained in the <see cref="T:System.ComponentModel.BindingList`1" />.</param>
-        public SortableBindingList(IList<T> list)
-            : base(list)
+        public SortableBindingList(Control control = null) 
+            : base(control)
         {
         }
 
